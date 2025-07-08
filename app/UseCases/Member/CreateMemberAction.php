@@ -1,5 +1,7 @@
 <?php
 
+namespace App\UseCases\Member;
+
 use App\Models\User;
 use App\Models\MemberProfile;
 use App\Enums\Common\GenderEnum;
