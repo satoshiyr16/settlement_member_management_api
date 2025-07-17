@@ -29,7 +29,6 @@ class MemberRegisterRequest extends FormRequest
             'nickname' => 'required|string|max:100',
             'gender' => ['nullable', Rule::in(array_column(GenderEnum::cases(), "value"))],
             'birth_date' => 'nullable|date|before:today',
-            'enrollment_date' => 'required|date|before_or_equal:today',
         ];
 
         return $rules;
@@ -52,9 +51,6 @@ class MemberRegisterRequest extends FormRequest
             'gender.in' => '正しい性別を選択してください。',
             'birth_date.date' => '正しい形式の生年月日を入力ください。',
             'birth_date.before' => '生年月日は今日以前の日付である必要があります。',
-            'enrollment_date.required' => '入会日は必須です。',
-            'enrollment_date.date' => '正しい形式の入会日を入力ください。',
-            'enrollment_date.before_or_equal' => '入会日は今日以前の日付である必要があります。',
         ];
     }
 }
