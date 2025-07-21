@@ -31,7 +31,7 @@ final class CreateMemberAction
                 'nickname' => $values['nickname'],
                 'gender' => $values['gender'],
                 'birth_date' => $values['birth_date'],
-                'enrollment_date' => $values['enrollment_date'],
+                'enrollment_date' => now(),
             ]);
         });
     }

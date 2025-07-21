@@ -27,7 +27,7 @@ class MemberRegisterRequest extends FormRequest
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|max:32|confirmed',
             'nickname' => 'required|string|max:100',
-            'gender' => ['nullable', Rule::in(array_column(GenderEnum::cases(), "value"))],
+            'gender' => ['required', Rule::in(array_column(GenderEnum::cases(), "value"))],
             'birth_date' => 'nullable|date|before:today',
         ];
 
