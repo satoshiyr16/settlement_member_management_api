@@ -3,10 +3,8 @@
 namespace App\Http\Requests\Member\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
-use App\Enums\Common\GenderEnum;
 
-class MemberProvRegisterRequest extends FormRequest
+class ProvRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

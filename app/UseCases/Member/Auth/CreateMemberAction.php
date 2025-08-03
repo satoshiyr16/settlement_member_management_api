@@ -1,10 +1,9 @@
 <?php
 
-namespace App\UseCases\Member;
+namespace App\UseCases\Member\Auth;
 
 use App\Models\User;
 use App\Models\MemberProfile;
-use App\Enums\Common\GenderEnum;
 use App\Enums\Common\UserRoleEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;

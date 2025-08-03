@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MemberProfile extends Model
+class EmailVerification extends Model
 {
     use HasFactory;
 
@@ -16,11 +15,10 @@ class MemberProfile extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'user_id',
-        'nickname',
-        'gender',
-        'birth_date',
-        'enrollment_date',
+        'email',
+        'token',
+        'status',
+        'expiration_datetime',
     ];
 
     /**
@@ -31,18 +29,7 @@ class MemberProfile extends Model
     protected function casts(): array
     {
         return [
-            'birth_date' => 'date',
-            'enrollment_date' => 'date',
+            'expiration_datetime' => 'datetime',
         ];
-    }
-
-    /**
-     * ユーザーとのリレーション
-     *
-     * @return BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }
