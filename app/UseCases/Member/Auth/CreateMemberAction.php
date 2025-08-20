@@ -29,7 +29,7 @@ final class CreateMemberAction
                 'user_id' => $user->id,
                 'nickname' => $values['nickname'],
                 'gender' => $values['gender'],
-                'birth_date' => $values['birth_date'],
+                'birth_date' => $values['birth_date'] ?? null,
                 'enrollment_date' => now(),
             ]);
         });

@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use App\Models\User;
 use App\Http\Requests\Member\Auth\ProvRegisterRequest;
 use App\Http\Requests\Member\Auth\ProvRegisterTokenRequest;
 use App\Http\Requests\Member\Auth\RegisterRequest;
@@ -15,7 +18,8 @@ use App\UseCases\Member\Auth\SendRegisterUrlEmailAction;
 use App\UseCases\Member\Auth\ValidateRegisterEmailTokenAction;
 use App\UseCases\Member\Auth\CreateMemberAction;
 use App\UseCases\Member\Auth\LoginMemberAction;
-use Illuminate\Support\Facades\Log;
+use App\Http\Resources\Entity\UserResource;
+use App\Http\Resources\Entity\MemberResource;
 
 class MemberAuthController extends Controller
 {
@@ -31,13 +35,11 @@ class MemberAuthController extends Controller
         ProvRegisterRequest $request,
         CreateEmailVerificationReturnTokenAction $createVerificationAction,
         SendRegisterUrlEmailAction $sendEmailAction
-    ): JsonResponse {
+    ): JsonResponse
+    {
         $validated = $request->validated();
-
-        DB::transaction(function () use ($validated, $createVerificationAction, $sendEmailAction) {
-            $token = $createVerificationAction($validated['email']);
-            $sendEmailAction($validated['email'], $token);
-        });
+        $token = $createVerificationAction($validated['email']);
+        $sendEmailAction($validated['email'], $token);
 
         return response()->json([], Response::HTTP_CREATED);
     }
@@ -52,7 +54,8 @@ class MemberAuthController extends Controller
     public function validateRegisterEmailToken(
         ProvRegisterTokenRequest $request,
         ValidateRegisterEmailTokenAction $action
-    ): JsonResponse {
+    ): JsonResponse
+    {
         $validated = $request->validated();
         $email = $action($validated['token'], $validated['email']);
 
@@ -84,12 +87,28 @@ class MemberAuthController extends Controller
     public function loginMember(LoginMemberRequest $request, LoginMemberAction $action): JsonResponse
     {
         $validated = $request->validated();
-        $action($validated);
-
-        Log::info('Response cookies', [
-            'cookies' => $request->headers->get('cookie')
-        ]);
+        $action($request, $validated);
 
         return response()->json([], Response::HTTP_CREATED);
+    }
+
+    /**
+     * 認証されているか確認後、ログインしているユーザーのデータを返却する
+     *
+     * @return JsonResponse
+     */
+    public function checkAuthReturnUserInfo(): JsonResponse
+    {
+        $userId = Auth::guard('member')->id();
+        if (!$userId) {
+            throw new UnauthorizedHttpException('Unauthorized');
+        }
+
+        $user = User::with('memberProfile')->find($userId);
+
+        return response()->json([
+            'user' => UserResource::make($user),
+            'member' => MemberResource::make($user->memberProfile),
+        ], Response::HTTP_OK);
     }
 }

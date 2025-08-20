@@ -18,6 +18,10 @@ final class SendRegisterUrlEmailAction
     {
         $mail = new RegisterMail($email, $token);
 
-        Mail::to($email)->send($mail);
+        try {
+            Mail::to($email)->send($mail);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }

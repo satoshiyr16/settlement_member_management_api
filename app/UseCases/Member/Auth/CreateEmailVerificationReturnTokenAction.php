@@ -5,6 +5,7 @@ namespace App\UseCases\Member\Auth;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Enums\Common\EmailVerificationStatusEnum;
 use App\Models\EmailVerification;
 
@@ -26,12 +27,14 @@ final class CreateEmailVerificationReturnTokenAction
          */
         $expirationDatetime = Carbon::now()->addHour();
 
-        EmailVerification::create([
-            'email' => $email,
-            'token' => $token,
-            'status' => $status,
-            'expiration_datetime' => $expirationDatetime,
-        ]);
+        DB::transaction(function () use ($email, $token, $status, $expirationDatetime) {
+            EmailVerification::create([
+                'email' => $email,
+                'token' => $token,
+                'status' => $status,
+                'expiration_datetime' => $expirationDatetime,
+            ]);
+        });
 
         return $token;
     }

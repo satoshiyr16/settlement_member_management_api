@@ -16,4 +16,8 @@ Route::prefix('member')->group(function () {
     Route::post('/provisional-register', [MemberAuthController::class, 'provisionalCreateMember']);
     Route::post('/register', [MemberAuthController::class, 'createMember']);
     Route::post('/login', [MemberAuthController::class, 'loginMember']);
+
+    Route::middleware('auth:member')->group(function () {
+        Route::get('/auth', [MemberAuthController::class, 'checkAuthReturnUserInfo']);
+    });
 });

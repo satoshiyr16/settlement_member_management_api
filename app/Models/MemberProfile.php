@@ -31,8 +31,8 @@ class MemberProfile extends Model
     protected function casts(): array
     {
         return [
-            'birth_date' => 'date',
-            'enrollment_date' => 'date',
+            'birth_date' => 'date:Y-m-d',
+            'enrollment_date' => 'date:Y-m-d',
         ];
     }
 

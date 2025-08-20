@@ -4,47 +4,43 @@ namespace App\UseCases\Member\Auth;
 
 use App\Models\User;
 use App\Enums\Common\UserRoleEnum;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use App\Http\Requests\Member\Auth\LoginMemberRequest;
 
 class LoginMemberAction
 {
     /**
      * ユーザーログインを実行する
      *
-     * @param array<string, mixed> $data
-     * @param UserRoleEnum $role
-     * @param string $guard
+     * @param LoginMemberRequest $request
+     * @param array<string, mixed> $values
      * @return void
      * @throws ValidationException
      */
-    public function __invoke(array $values): void
+    public function __invoke(LoginMemberRequest $request, array $values): void
     {
         $user = User::where('email', $values['email'])
             ->where('role', UserRoleEnum::MEMBER->value)
             ->first();
-
-        if (!$user || !Hash::check($values['password'], $user->password)) {
+        if (!$user) {
             throw ValidationException::withMessages([
                 'email' => ['メールアドレスまたはパスワードが正しくありません。'],
             ]);
         }
+
         $credentials = [
             'email' => $user->email,
             'password' => $values['password'],
             'role' => UserRoleEnum::MEMBER->value,
         ];
 
-        Session::start();
-
-        if (!auth('member')->attempt($credentials)) {
+        if (!Auth::guard('member')->attempt($credentials)) {
             throw ValidationException::withMessages([
                 'email' => ['メールアドレスまたはパスワードが正しくありません。'],
             ]);
         }
 
-        Session::regenerate();
-        Session::save();
+        $request->session()->regenerate();
     }
 }

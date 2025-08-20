@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -41,7 +42,12 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
-            'suspended_at' => 'datetime',
+            'suspended_at' => 'date:Y-m-d',
         ];
+    }
+
+    public function memberProfile(): HasOne
+    {
+        return $this->hasOne(MemberProfile::class);
     }
 }
