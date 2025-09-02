@@ -5,23 +5,23 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use App\Models\User;
+use App\Enums\EmailVerificationStatusEnum;
 use App\Http\Requests\Member\Auth\ProvRegisterRequest;
-use App\Http\Requests\Member\Auth\ProvRegisterTokenRequest;
+use App\Http\Requests\Member\EmailAndTokenRequest;
 use App\Http\Requests\Member\Auth\RegisterRequest;
 use App\Http\Requests\Member\Auth\LoginMemberRequest;
-use App\UseCases\Member\Auth\CreateEmailVerificationReturnTokenAction;
+use App\UseCases\Member\Domain\CreateEmailVerificationReturnTokenAction;
+use App\UseCases\Member\Domain\ValidateEmailTokenAction;
 use App\UseCases\Member\Auth\SendRegisterUrlEmailAction;
-use App\UseCases\Member\Auth\ValidateRegisterEmailTokenAction;
 use App\UseCases\Member\Auth\CreateMemberAction;
 use App\UseCases\Member\Auth\LoginMemberAction;
 use App\Http\Resources\Entity\UserResource;
 use App\Http\Resources\Entity\MemberResource;
 
-class MemberAuthController extends Controller
+class AuthController extends Controller
 {
     /**
      * 仮登録
@@ -38,7 +38,7 @@ class MemberAuthController extends Controller
     ): JsonResponse
     {
         $validated = $request->validated();
-        $token = $createVerificationAction($validated['email']);
+        $token = $createVerificationAction($validated['email'], EmailVerificationStatusEnum::SEND_MAIL_REGISTER);
         $sendEmailAction($validated['email'], $token);
 
         return response()->json([], Response::HTTP_CREATED);
@@ -47,17 +47,17 @@ class MemberAuthController extends Controller
     /**
      * 仮登録メールアドレスのトークンを検証する
      *
-     * @param ProvRegisterTokenRequest $request
+     * @param EmailAndTokenRequest $request
      * @param ValidateRegisterEmailTokenAction $action
      * @return JsonResponse
      */
     public function validateRegisterEmailToken(
-        ProvRegisterTokenRequest $request,
-        ValidateRegisterEmailTokenAction $action
+        EmailAndTokenRequest $request,
+        ValidateEmailTokenAction $action
     ): JsonResponse
     {
         $validated = $request->validated();
-        $email = $action($validated['token'], $validated['email']);
+        $email = $action($validated['token'], $validated['email'], EmailVerificationStatusEnum::SEND_MAIL_REGISTER);
 
         return response()->json(['email' => $email], Response::HTTP_OK);
     }
@@ -108,7 +108,7 @@ class MemberAuthController extends Controller
 
         return response()->json([
             'user' => UserResource::make($user),
-            'member' => MemberResource::make($user->memberProfile),
+            'member' => MemberResource::make($user->memberProfile)
         ], Response::HTTP_OK);
     }
 }

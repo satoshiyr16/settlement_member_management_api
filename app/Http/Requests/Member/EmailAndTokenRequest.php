@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Member\Auth;
+namespace App\Http\Requests\Member;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProvRegisterTokenRequest extends FormRequest
+class EmailAndTokenRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Member\Auth;
+namespace App\Http\Requests\Member\Profile;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Enums\GenderEnum;
 
-class RegisterRequest extends FormRequest
+class UpdateProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,9 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|max:32|confirmed',
             'nickname' => 'required|string|max:100',
-            'gender' => ['required', Rule::in(array_column(GenderEnum::cases(), "value"))],
             'birth_date' => 'nullable|date|before:today',
+            'gender' => ['required', Rule::in(array_column(GenderEnum::cases(), "value"))],
         ];
 
         return $rules;
@@ -37,14 +35,6 @@ class RegisterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'メールアドレスは必須です。',
-            'email.email' => 'メールアドレスの形式が不正です。',
-            'email.unique' => 'このメールアドレスは既に使用されています。',
-            'password.required' => 'パスワードは必須です。',
-            'password.string' => '正しい形式のパスワードを入力ください。',
-            'password.min' => 'パスワードは8文字以上である必要があります。',
-            'password.max' => 'パスワードは32文字以内である必要があります。',
-            'password.confirmed' => 'パスワードが一致しません。',
             'nickname.required' => 'ニックネームは必須です。',
             'nickname.string' => '正しい形式のニックネームを入力ください。',
             'nickname.max' => 'ニックネームは100文字以内である必要があります。',

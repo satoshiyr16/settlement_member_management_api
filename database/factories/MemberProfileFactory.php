@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\Common\GenderEnum;
+use App\Enums\GenderEnum;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,7 +21,7 @@ class MemberProfileFactory extends Factory
         return [
             'user_id' => User::factory(),
             'nickname' => fake()->unique()->userName(),
-            'gender' => fake()->randomElement([1, 2, 3, 4]), // GenderEnumの値を使用
+            'gender' => fake()->randomElement(GenderEnum::cases()),
             'birth_date' => fake()->date(),
             'enrollment_date' => fake()->date(),
         ];

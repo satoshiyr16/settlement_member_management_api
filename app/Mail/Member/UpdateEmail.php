@@ -9,17 +9,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RegisterMail extends Mailable
+class UpdateEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
     private $email;
     private $url;
+    private $nickname;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(string $email, string $token)
+    public function __construct(string $email, string $token, string $nickname)
     {
         $this->generateUrl($email, $token);
     }
@@ -36,7 +37,7 @@ class RegisterMail extends Mailable
                 $from['address'],
                 $from['name'],
             ),
-            subject: '【メンバー決済管理】本登録のURLが発行されました',
+            subject: '【enysCode】メールアドレス変更のURLが発行されました',
         );
     }
 
@@ -50,6 +51,7 @@ class RegisterMail extends Mailable
             with: [
                 'email' => $this->email,
                 'url' => $this->url,
+                'nickname' => $this->nickname,
             ],
         );
     }
@@ -75,7 +77,7 @@ class RegisterMail extends Mailable
     {
         $this->email = $email;
 
-        $baseUrl = config('app.frontend_url') . '/guest/register';
+        $baseUrl = config('app.frontend_url') . '/member/profile/basic/mail/update-complete';
         $queryParams = http_build_query([
             'token' => $token,
             'email' => $email,

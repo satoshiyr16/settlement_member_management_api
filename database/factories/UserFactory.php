@@ -4,8 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use App\Enums\Common\UserRoleEnum;
+use App\Enums\UserRoleEnum;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -32,22 +31,16 @@ class UserFactory extends Factory
         ];
     }
 
-    /**
-     * メンバーロールのユーザーを生成
-     */
     public function member(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn(array $_) => [
             'role' => UserRoleEnum::MEMBER->value,
         ]);
     }
 
-    /**
-     * 管理者ロールのユーザーを生成
-     */
     public function admin(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn(array $_) => [
             'role' => UserRoleEnum::ADMIN->value,
         ]);
     }

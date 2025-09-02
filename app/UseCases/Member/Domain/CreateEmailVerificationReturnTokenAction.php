@@ -1,12 +1,12 @@
 <?php
 
-namespace App\UseCases\Member\Auth;
+namespace App\UseCases\Member\Domain;
 
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Enums\Common\EmailVerificationStatusEnum;
+use App\Enums\EmailVerificationStatusEnum;
 use App\Models\EmailVerification;
 
 /**
@@ -17,14 +17,11 @@ use App\Models\EmailVerification;
  */
 final class CreateEmailVerificationReturnTokenAction
 {
-    public function __invoke(string $email): string
+    public function __invoke(string $email, EmailVerificationStatusEnum $statusEnum): string
     {
         $token = Str::random(250);
-        $status = EmailVerificationStatusEnum::SEND_MAIL_REGISTER->value;
-
-        /**
-         * MEMO： tokenの有効期限は1時間に固定している。
-         */
+        $status = $statusEnum->value;
+        /** tokenの有効期限は1時間に固定 */
         $expirationDatetime = Carbon::now()->addHour();
 
         DB::transaction(function () use ($email, $token, $status, $expirationDatetime) {

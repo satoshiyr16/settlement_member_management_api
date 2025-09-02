@@ -12,8 +12,12 @@ class UserResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request): array|null
     {
+        if (!$this->resource) {
+            return null;
+        }
+
         return [
             'user_id' => $this->id,
             'email' => $this->email,

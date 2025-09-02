@@ -3,7 +3,7 @@
 namespace App\UseCases\Member\Auth;
 
 use App\Models\User;
-use App\Enums\Common\UserRoleEnum;
+use App\Enums\UserRoleEnum;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\Member\Auth\LoginMemberRequest;

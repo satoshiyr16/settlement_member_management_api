@@ -2,7 +2,7 @@
 
 namespace App\UseCases\MasterData;
 
-use App\Enums\Common\GenderEnum;
+use App\Enums\GenderEnum;
 
 /**
  * マスタデータ取得

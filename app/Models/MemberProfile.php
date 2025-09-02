@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Laravel\Cashier\Billable;
 
 class MemberProfile extends Model
 {
-    use HasFactory;
+    use HasFactory, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +22,10 @@ class MemberProfile extends Model
         'gender',
         'birth_date',
         'enrollment_date',
+        'stripe_id',
+        'pm_type',
+        'pm_last_four',
+        'trial_ends_at',
     ];
 
     /**
@@ -33,6 +38,7 @@ class MemberProfile extends Model
         return [
             'birth_date' => 'date:Y-m-d',
             'enrollment_date' => 'date:Y-m-d',
+            'trial_ends_at' => 'datetime',
         ];
     }
 
