@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('nickname')->comment('ニックネーム');
-            $table->enum('gender', ['male', 'female', 'other'])->nullable()->comment('性別');
+            $table->unsignedTinyInteger('gender')->nullable()->comment('性別');
             $table->date('birth_date')->nullable()->comment('生年月日');
             $table->date('enrollment_date')->comment('入会日');
             $table->timestamps();
